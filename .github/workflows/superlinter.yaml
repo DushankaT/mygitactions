@@ -1,17 +1,71 @@
-name: Super-Linter
+openapi: 3.0.0
 
-on: push
+info:
+    title: My YAML
+    description: My YAML
+    version: 1.0.0
 
-jobs: 
-super-lint:
-name: Lint code base
-runs-on: ubuntu-latest
-steps: 
-- name: Checkout code
-uses: actions/checkout@v2
+servers:
+- url: http://my.server.url
 
--name: Run super-Linter
-uses: github/super-linter@v2
-env:
-DEFULT BRANCH: main
-GITHUB TOKEN: ${{ secrets.GITHUB_TOKEN }}
+paths:
+     /v1/service/uri:
+        post:
+          summary: Getting some information.
+          parameters:
+
+          - name: Content-Type
+            in: header
+            description: Content type of request body.
+            required: true
+            style: simple
+            explode: false
+            schema:
+              type: string
+
+          - name: Host 
+            in: header
+            description: Originate host which returns the response.
+            required: false
+            style: simple
+            explode: false
+            schema:
+              type: string
+
+          requestBody:
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/MyPostRequest'
+                  example:
+                      my_name: "zizi"
+                      my_age: 29
+
+            required: true
+
+          responses:
+            200:
+              description: OK
+                  content:
+                    application/json:
+                      schema:
+                        $ref: '#/components/schemas/MyPostResponse'
+
+components:
+    schemas:
+
+        MyPostRequest:
+            type: object
+            properties:
+                my_name:
+                    type: string
+                my_age:
+                    type: integer
+                    format: int32
+
+        MyPostResponse:
+            type: object
+            properties:
+                status:
+                    type: integer
+                    format: int32
